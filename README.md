@@ -1,0 +1,120 @@
+1. Quais são os principais desafios ao implementar uma regressão linear "pura" em Rust?
+Sem bibliotecas externas: Tudo precisa ser feito manualmente — soma, média, variância, etc.
+
+Gerenciamento de erros e segurança de tipos: Rust é rígido quanto a tipos, e exige lidar com possíveis erros de forma explícita.
+
+Precisão numérica: Operações com f64 podem acumular erros, principalmente com grandes volumes de dados.
+
+Curva de aprendizado: Comparado a Python ou R, Rust é mais verboso e exige mais conhecimento de baixo nível.
+
+2. Como lidar com entradas inválidas (por exemplo, array vazio) na função de regressão linear?
+Deve-se validar a entrada antes de realizar os cálculos:
+
+rust
+Copiar
+Editar
+if data.len() < 2 {
+    panic!("Erro: a série temporal precisa de pelo menos 2 pontos.");
+}
+Alternativa mais elegante: retornar Result<Self, String> para evitar panic!:
+
+rust
+Copiar
+Editar
+pub fn fit(data: &[f64]) -> Result<Self, String> { ... }
+
+3. Quais são as vantagens e desvantagens de utilizar Rust para implementar algoritmos numéricos?
+✅ Vantagens:
+
+Alto desempenho comparável ao C/C++
+
+Segurança de memória (sem ponteiros nulos ou vazamentos)
+
+Paralelismo seguro com rayon ou tokio
+
+Boa integração com WebAssembly (ideal para deploy web)
+
+⚠️ Desvantagens:
+
+Falta de bibliotecas estatísticas maduras (comparado a Python)
+
+Verbosidade e complexidade para tarefas simples
+
+Curva de aprendizado maior
+
+4. Como os testes unitários podem garantir a qualidade da função de regressão linear?
+Garantem que os coeficientes estão corretos com dados simples (ex: y = 2x + 1)
+
+Validam se MSE e R² se comportam como esperado
+
+Detectam regressões (erros que surgem ao modificar o código)
+
+Ajudam a manter a confiança ao refatorar
+
+Exemplo:
+
+rust
+Copiar
+Editar
+assert!((model.r_squared(&data) - 1.0).abs() < 1e-6);
+5. Qual a importância de uma documentação clara e completa para o projeto?
+Facilita o uso e manutenção do código
+
+Ajuda outros desenvolvedores a entenderem como utilizar o módulo
+
+Reduz a necessidade de suporte técnico
+
+Permite geração automática de documentação com cargo doc
+
+6. Como a regressão linear pode ser utilizada para realizar previsões em séries temporais?
+Considera a posição no tempo (x = índice) como variável independente
+
+Estima a tendência linear dos dados
+
+Pode prever valores futuros com:
+
+rust
+Copiar
+Editar
+y = slope * x + intercept
+Ideal quando há uma tendência linear estável.
+
+7. Quais são as limitações da regressão linear e quando ela pode não ser o modelo mais adequado?
+⚠️ Limitações:
+
+Só modela relações lineares
+
+É sensível a outliers
+
+Não lida bem com sazonalidade, ciclos ou não-linearidades
+
+Supõe variância constante (homocedasticidade)
+
+🧠 Não é adequada quando:
+
+A relação entre variáveis não é linear
+
+Há muitos ruídos ou padrões complexos (ex: dados financeiros)
+
+Modelos como ARIMA, redes neurais ou regressão polinomial são mais apropriados
+
+8. Como as métricas de avaliação podem ajudar a determinar a qualidade da regressão linear?
+R² (Coeficiente de Determinação):
+
+Mede o quanto da variação dos dados é explicada pelo modelo
+
+Varia de 0 a 1 (quanto mais perto de 1, melhor)
+
+MSE (Erro Quadrático Médio):
+
+Mede o erro médio entre valores reais e previstos
+
+Quanto menor, melhor o ajuste
+
+Essas métricas ajudam a responder:
+
+O modelo está representando bem os dados?
+
+É confiável usar para previsão?
+
+Comparado a outros modelos, esse tem melhor desempenho?
